@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Downloader - TikTok Downloader</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: "Poppins", sans-serif; }
+    .btn-anim { transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; }
+    .btn-anim:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { border: 3px solid transparent; border-top-color: white; border-radius: 50%; width: 1rem; height: 1rem; animation: spin 1s linear infinite; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 p-5 flex flex-col">
+    <h1 class="text-2xl font-bold flex items-center gap-2 mb-6">
+      <i class=""></i> Saiktok Menu
+    </h1>
+    <nav class="flex flex-col gap-3">
+      <a href="index.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Home</a>
+      <details class="group" open>
+        <summary class="px-3 py-2 rounded-lg hover:bg-purple-600 transition cursor-pointer flex items-center justify-between">
+          <span>⬇️ Downloader</span>
+          <i class="fas fa-chevron-down text-sm transition-transform group-open:rotate-180"></i>
+        </summary>
+        <div class="ml-4 mt-2 flex flex-col gap-2">
+          <a href="downloader.html" class="px-3 py-2 rounded-lg bg-purple-600 transition">🎥 Video Downloader</a>
+          <a href="photo.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">📸 Photo Downloader</a>
+        </div>
+      </details>
+      <a href="tutorial.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Tutorial</a>
+      <a href="features.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Features</a>
+      <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Contact</a>
+    </nav>
+
+    <div class="mt-auto text-sm text-gray-400">
+      <p>© 2025 TikTok Downloader Made with ❤️ by Saira</p>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="bg-gray-800 px-6 py-4 flex justify-between items-center shadow">
+      <h2 class="text-xl font-semibold flex items-center gap-2">
+        <i class="fas fa-download text-purple-400"></i> Saiktok Video Downloader
+      </h2>
+    </header>
+
+    <!-- Downloader Content -->
+    <section class="flex-grow p-8">
+      <div class="bg-gray-800 rounded-2xl shadow-xl p-6">
+        <h3 class="text-lg font-bold text-purple-400 mb-3">🎥 Download TikTok</h3>
+        <p class="text-gray-300 mb-4">Paste a TikTok link below and choose quality.</p>
+
+        <!-- Input Form -->
+        <form id="download-form" class="flex gap-3 flex-wrap" onsubmit="return false">
+          <input id="tiktok-url" type="url"
+            class="flex-1 rounded-lg px-4 py-2 text-gray-900 text-base border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            placeholder="Paste TikTok URL here" required />
+
+          <!-- Quality Picker (Custom UX Dropdown) -->
+          <div class="relative w-48" id="quality-dropdown">
+            <button type="button" 
+              id="quality-btn" 
+              class="w-full px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 flex justify-between items-center hover:bg-gray-600 transition">
+              <span id="quality-selected" class="flex items-center gap-2">
+                <i class="fas fa-tv text-purple-400"></i> 1080p (HD)
+              </span>
+              <i class="fas fa-chevron-down text-sm ml-2"></i>
+            </button>
+            <ul id="quality-options" 
+                class="absolute mt-1 w-full bg-gray-800 border border-gray-600 rounded-lg shadow-lg hidden z-10">
+              <li data-value="1080" class="px-3 py-2 hover:bg-purple-600 cursor-pointer flex items-center gap-2 rounded-t-lg">
+                <i class="fas fa-tv text-purple-400"></i> 1080p (HD)
+              </li>
+              <li data-value="720" class="px-3 py-2 hover:bg-purple-600 cursor-pointer flex items-center gap-2">
+                <i class="fas fa-film text-purple-400"></i> 720p
+              </li>
+              <li data-value="480" class="px-3 py-2 hover:bg-purple-600 cursor-pointer flex items-center gap-2 rounded-b-lg">
+                <i class="fas fa-compress-alt text-purple-400"></i> 480p
+              </li>
+            </ul>
+          </div>
+          <input type="hidden" id="quality" value="1080" />
+
+          <button type="submit" id="download-btn"
+            class="btn-anim bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg px-6 py-2 flex items-center gap-2">
+            <span id="btn-text">Download</span>
+          </button>
+        </form>
+
+        <!-- Result Section -->
+        <div id="result-section" class="mt-6 hidden flex flex-col items-center justify-center text-center">
+          <video id="video-preview" class="hidden rounded-xl shadow-lg w-full max-w-md mb-4" controls></video>
+          <a id="download-link" href="#" download
+            class="btn-anim bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-6 py-2 shadow-md hidden" target="_blank">
+            <i class="fas fa-file-download"></i> Download File
+          </a>
+          <p id="thank-you-text" class="hidden mt-3 text-green-400 font-semibold">✅ Thank you for using our TikTok Downloader!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("download-form");
+    const urlInput = document.getElementById("tiktok-url");
+    const resultSection = document.getElementById("result-section");
+    const videoPreview = document.getElementById("video-preview");
+    const downloadLink = document.getElementById("download-link");
+    const thankYouText = document.getElementById("thank-you-text");
+    const downloadBtn = document.getElementById("download-btn");
+    const btnText = document.getElementById("btn-text");
+
+    // Custom Dropdown
+    const dropdown = document.getElementById("quality-dropdown");
+    const btn = document.getElementById("quality-btn");
+    const options = document.getElementById("quality-options");
+    const selected = document.getElementById("quality-selected");
+    const hiddenInput = document.getElementById("quality");
+
+    btn.addEventListener("click", () => {
+      options.classList.toggle("hidden");
+    });
+
+    options.querySelectorAll("li").forEach(option => {
+      option.addEventListener("click", () => {
+        const value = option.getAttribute("data-value");
+        const text = option.innerHTML;
+        selected.innerHTML = text;
+        hiddenInput.value = value;
+        options.classList.add("hidden");
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!dropdown.contains(e.target)) options.classList.add("hidden");
+    });
+
+    function setLoading(isLoading) {
+      btnText.innerHTML = isLoading ? `<span class="spinner"></span>` : "Download";
+      downloadBtn.disabled = isLoading;
+    }
+
+    async function fetchTikTok(url) {
+      const apiUrl = `https://apii.baguss.web.id/downloader/ttdl?apikey=bagus&url=${encodeURIComponent(url)}`;
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error("Failed to fetch data");
+      return res.json();
+    }
+
+    form.addEventListener("submit", async () => {
+      const url = urlInput.value.trim();
+      if (!url) return alert("⚠️ Please paste a TikTok link first!");
+
+      const quality = hiddenInput.value;
+
+      setLoading(true);
+      try {
+        const data = await fetchTikTok(url);
+        resultSection.classList.remove("hidden");
+        videoPreview.classList.add("hidden");
+        downloadLink.classList.add("hidden");
+        thankYouText.classList.add("hidden");
+
+        const videoURL = data?.video?.nowatermark_hd || data?.video?.nowatermark || data?.result?.nowm || data?.data?.play;
+        if (videoURL) {
+          videoPreview.src = videoURL;
+          videoPreview.classList.remove("hidden");
+          downloadLink.href = videoURL;
+          downloadLink.download = `tiktok-${quality}.mp4`;
+          downloadLink.classList.remove("hidden");
+          thankYouText.classList.remove("hidden");
+        } else {
+          alert("❌ No media found for this URL.");
+        }
+      } catch (e) {
+        alert("Error: " + e.message);
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

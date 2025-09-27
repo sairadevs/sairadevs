@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home - TikTok Downloader</title>
+  <title>Photo Downloader - TikTok Downloader</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
@@ -22,17 +22,20 @@
       <i class=""></i> Saiktok Menu
     </h1>
     <nav class="flex flex-col gap-3">
-      <a href="index.html" class="px-3 py-2 rounded-lg bg-purple-600 transition">Home</a>
-   <details class="group" close>
+      <a href="index.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Home</a>
+
+      <!-- Downloader dropdown -->
+      <details class="group" open>
         <summary class="px-3 py-2 rounded-lg hover:bg-purple-600 transition cursor-pointer flex items-center justify-between">
           <span>⬇️ Downloader</span>
           <i class="fas fa-chevron-down text-sm transition-transform group-open:rotate-180"></i>
         </summary>
         <div class="ml-4 mt-2 flex flex-col gap-2">
           <a href="downloader.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">🎥 Video Downloader</a>
-          <a href="photo.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">📸 Photo Downloader</a>
+          <a href="photo.html" class="px-3 py-2 rounded-lg bg-purple-600 transition">📸 Photo Downloader</a>
         </div>
       </details>
+
       <a href="tutorial.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Tutorial</a>
       <a href="featured.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Features</a>
       <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-purple-600 transition">Contact</a>
@@ -47,26 +50,17 @@
     <!-- Header -->
     <header class="bg-gray-800 px-6 py-4 flex justify-between items-center shadow">
       <h2 class="text-xl font-semibold flex items-center gap-2">
-        <i class="fas fa-home text-purple-400"></i> Saiktok Welcome
+        <i class="fas fa-image text-purple-400"></i>Saiktok Photo Downloader
       </h2>
     </header>
 
-    <!-- Home Content -->
-    <section class="flex-grow p-8 flex flex-col items-center justify-center text-center">
-      <h1 class="text-4xl font-extrabold text-purple-400 mb-4">🎵 Saiktok Video / Photo Downloader </h1>
-      <p class="text-gray-300 max-w-xl mb-6">
-        Welcome to Saiktok Video / Photo Downloader the most powerful and user-friendly TikTok Downloader.  
-        Download videos in HD, without watermark, and enjoy our extra tools like photo & profile downloads.
-      </p>
-      <a href="downloader.html" 
-         class="btn-anim bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg px-8 py-3">
-        🚀 Go to Saiktok Video Downloader
-      </a><br><br>
-      <a href="photo.html" 
-         class="btn-anim bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg px-8 py-3">
-        🚀 Go to Saiktok Photo Downloader
-      </a>
-      
+    <!-- Content -->
+    <section class="flex-grow p-8">
+      <div class="bg-gray-800 rounded-2xl shadow-xl p-6 flex flex-col items-center justify-center text-center">
+        <i class="fas fa-tools text-5xl text-gray-500 mb-4"></i>
+        <h3 class="text-lg font-bold text-purple-400 mb-2">📸 Currently Not Available</h3>
+        <p class="text-gray-300">This feature is not available in this update. Please stay tuned for future releases.</p>
+      </div>
     </section>
   </main>
 </body>
